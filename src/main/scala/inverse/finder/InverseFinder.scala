@@ -3,7 +3,8 @@ package inverse.finder
 import matrix.RegularMatrix
 
 object InverseFinder {
-  def find[A: Numeric](matrix: RegularMatrix[A], kmax: Int): Option[RegularMatrix[A]] ={
+  def find[A: Numeric](matrix: RegularMatrix[A],
+                       kmax: Int)(implicit method: InverseApproximator[A]): Option[RegularMatrix[A]] ={
     def go(matrix: RegularMatrix[A], k: Int): Option[RegularMatrix[A]] = {
       if( k == kmax){
         None
