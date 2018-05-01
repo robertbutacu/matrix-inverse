@@ -7,10 +7,10 @@ trait InverseApproximator[A] {
 }
 
 object InverseApproximator {
-  implicit def schultz[A: Numeric]: InverseApproximator[A] =
+  implicit def schultz[A: Fractional]: InverseApproximator[A] =
     (currApproximation: RegularMatrix[A], matrix: RegularMatrix[A]) => {
       // V(k+1) = V(k)(2 In - AV(k))
-      val num = implicitly[Numeric[A]]
+      val num = implicitly[Fractional[A]]
       val result =
         currApproximation.***(
           matrix.identityMatrix.map(num.times(_, num.fromInt(2))).---(matrix.***(currApproximation)))
@@ -18,10 +18,10 @@ object InverseApproximator {
       RegularMatrix(result.rows)
     }
 
-  implicit def li[A: Numeric]: InverseApproximator[A] =
+  implicit def li[A: Fractional]: InverseApproximator[A] =
     (currApproximation: RegularMatrix[A], matrix: RegularMatrix[A]) => {
       //V(k+1) = V(k)(3In - AV(k)(3* In- AV(k))
-      val num = implicitly[Numeric[A]]
+      val num = implicitly[Fractional[A]]
 
       val identity = matrix.identityMatrix.map(num.times(_, num.fromInt(3)))
 
@@ -33,10 +33,27 @@ object InverseApproximator {
       val result = currApproximation.***(paranthesisResult)
 
       RegularMatrix(result.rows)
-  }
+    }
 
-  implicit def li2[A: Numeric]: InverseApproximator[A] =
+  implicit def li2[A: Fractional]: InverseApproximator[A] =
     (currApproximation: RegularMatrix[A], matrix: RegularMatrix[A]) => {
-    currApproximation
-  }
+      //V(k + 1) = (In + 1/4(In - V(k)A)(3*In - V(k)A)^2)V(k)
+      val num = implicitly[Fractional[A]]
+
+      val identity = matrix.identityMatrix
+
+      val vKTimesA = currApproximation.***(matrix)
+      val firstParanthesis = identity.---(vKTimesA)
+
+      val secondParanthesis = identity.map(num.times(_, num.fromInt(3))).---(vKTimesA)
+
+      val paranthesisResult = firstParanthesis.***(secondParanthesis)
+
+      val fourthPartOfParanthesis = paranthesisResult.map(v => num.div(v, num.fromInt(4)))
+
+      val wholeParanthesisResult = identity.+++(fourthPartOfParanthesis)
+
+      val result = currApproximation.***(wholeParanthesisResult)
+      RegularMatrix(result.rows)
+    }
 }

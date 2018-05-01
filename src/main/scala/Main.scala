@@ -2,9 +2,9 @@ import matrix.RegularMatrix
 
 object Main extends App {
   val m = RegularMatrix(
-    List(List(1, 2, 3),
-      List(4, 5, 6),
-      List(7, 8, 9)))
+    List(List(1.0, 2.0, 3.0),
+      List(4.0, 5.0, 6.0),
+      List(7.0, 8.0, 9.0)))
 
   println(m.***(m))
 }
