@@ -94,4 +94,12 @@ object RegularMatrix {
             .map(v => f(v._1, v._2))
       }
     )(n)
+
+  def maximumAbsoluteColumnSumNorm[A: Fractional](matrix: RegularMatrix[A]): A = {
+    implicitly[Fractional[A]].zero
+  }
+
+  def maximumAbsoluteRowSumNorm[A: Fractional](matrix: RegularMatrix[A]): A = {
+    implicitly[Fractional[A]].zero
+  }
 }
