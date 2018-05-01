@@ -100,6 +100,8 @@ object RegularMatrix {
   }
 
   def maximumAbsoluteRowSumNorm[A: Fractional](matrix: RegularMatrix[A]): A = {
-    implicitly[Fractional[A]].zero
+    val sums = matrix.rows.map(r => r.sum)
+
+    sums.max
   }
 }
