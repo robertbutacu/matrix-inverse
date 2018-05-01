@@ -6,5 +6,5 @@ object Main extends App {
       List(4, 5, 6),
       List(7, 8, 9)))
 
-  println(m.identityMatrix)
+  println(m.***(m))
 }

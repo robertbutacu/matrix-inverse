@@ -9,6 +9,7 @@ trait InverseApproximator[A] {
 object InverseApproximator {
   implicit def schultz[A: Numeric]: InverseApproximator[A] =
     (currApproximation: RegularMatrix[A], matrix: RegularMatrix[A]) => {
+      // V(k+1) = V(k)(2 In - AV(k))
       currApproximation
     }
 

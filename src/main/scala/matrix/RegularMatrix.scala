@@ -31,10 +31,42 @@ case class RegularMatrix[A: Numeric](rows: List[List[A]]) extends Matrix[A] {
     val num = implicitly[Numeric[A]]
 
     //n rows with 1 on diagonal
-    RegularMatrix[A]((0 until n).map(row => List.fill(n)(0).zipWithIndex.map{v =>
-      if(v._2 == row) num.fromInt(1)
+    RegularMatrix[A]((0 until n).map(row => List.fill(n)(0).zipWithIndex.map { v =>
+      if (v._2 == row) num.fromInt(1)
       else num.zero
     }).toList)
+  }
+
+  override def ***(other: Matrix[A])(implicit n: Numeric[A]): Matrix[A] = {
+    require(other.rowLength == this.rows.length)
+    type ValueWithIndex = (A, Int)
+
+    def updateSum(sumSoFar: A, currElement: ValueWithIndex, currIndex: Int): A =
+      n.plus(sumSoFar, n.times(currElement._1, other.rows(currElement._2)(currIndex)))
+
+    def splitIntoRows(values: List[A], rowLength: Int): List[List[A]] = {
+      require(values.length % rowLength == 0)
+
+      if (values.isEmpty)
+        List.empty
+      else
+        values.slice(0, rowLength) :: splitIntoRows(values.drop(rowLength), rowLength)
+    }
+
+    def computeUpdatedValueForCurrentPosition(l: List[(A, Int)], currIndex: Int) =
+      l.foldRight(n.zero) {
+        (curr, acc) =>
+          updateSum(acc, curr, currIndex)
+      }
+
+    val productStream: List[A] = for {
+      row <- this.rows
+      currIndex <- row.indices.toList
+      elementsWithIndex = row.zipWithIndex
+      valueForCurrentPosition = computeUpdatedValueForCurrentPosition(elementsWithIndex, currIndex)
+    } yield valueForCurrentPosition
+
+    RegularMatrix[A](splitIntoRows(productStream, other.rows.head.length))(n)
   }
 }
 
