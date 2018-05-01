@@ -4,9 +4,10 @@ import matrix.RegularMatrix
 
 object InverseFinder {
   def find[A: Numeric](matrix: RegularMatrix[A],
-                       kmax: Int)(implicit method: InverseApproximator[A]): Option[RegularMatrix[A]] ={
+                       kmax: Int,
+                       epsilon: Precision)(implicit method: InverseApproximator[A]): Option[RegularMatrix[A]] = {
     def go(matrix: RegularMatrix[A], k: Int): Option[RegularMatrix[A]] = {
-      if( k == kmax){
+      if (k == kmax) {
         None
       }
       else {
