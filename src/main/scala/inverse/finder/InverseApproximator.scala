@@ -29,8 +29,8 @@ object InverseApproximator {
       val identityMinusAtimesVk = identity.---(AtimesVk)
       val secondPartOfEquation = AtimesVk.***(identityMinusAtimesVk)
 
-      val paranthesisResult = identity.---(secondPartOfEquation)
-      val result = currApproximation.***(paranthesisResult)
+      val parenthesesResult = identity.---(secondPartOfEquation)
+      val result = currApproximation.***(parenthesesResult)
 
       RegularMatrix(result.rows)
     }
@@ -43,17 +43,17 @@ object InverseApproximator {
       val identity = matrix.identityMatrix
 
       val vKTimesA = currApproximation.***(matrix)
-      val firstParanthesis = identity.---(vKTimesA)
+      val firstParentheses = identity.---(vKTimesA)
 
-      val secondParanthesis = identity.map(num.times(_, num.fromInt(3))).---(vKTimesA)
+      val secondParentheses = identity.map(num.times(_, num.fromInt(3))).---(vKTimesA)
 
-      val paranthesisResult = firstParanthesis.***(secondParanthesis)
+      val parenthesesResult = firstParentheses.***(secondParentheses)
 
-      val fourthPartOfParanthesis = paranthesisResult.map(v => num.div(v, num.fromInt(4)))
+      val fourthPartOfParentheses = parenthesesResult.map(v => num.div(v, num.fromInt(4)))
 
-      val wholeParanthesisResult = identity.+++(fourthPartOfParanthesis)
+      val wholeParenthesesResult = identity.+++(fourthPartOfParentheses)
 
-      val result = currApproximation.***(wholeParanthesisResult)
+      val result = currApproximation.***(wholeParenthesesResult)
       RegularMatrix(result.rows)
     }
 }
