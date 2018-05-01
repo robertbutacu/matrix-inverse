@@ -12,4 +12,5 @@ trait Matrix[A] {
   def mapRows[B](f: List[A] => List[B])(implicit n: Fractional[B]): Matrix[B]
 
   def identityMatrix: Matrix[A]
+  def transpose: Matrix[A]
 }

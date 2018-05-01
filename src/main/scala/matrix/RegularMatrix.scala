@@ -68,6 +68,8 @@ case class RegularMatrix[A: Fractional](rows: List[List[A]]) extends Matrix[A] {
 
     RegularMatrix[A](splitIntoRows(productStream, other.rows.head.length))(n)
   }
+
+  override def transpose: Matrix[A] = this
 }
 
 object RegularMatrix {
