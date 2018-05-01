@@ -1,4 +1,4 @@
-package first.lab.structures
+package matrix
 
 trait Matrix[A] {
   def rows: List[List[A]]
