@@ -69,7 +69,13 @@ case class RegularMatrix[A: Fractional](rows: List[List[A]]) extends Matrix[A] {
     RegularMatrix[A](splitIntoRows(productStream, other.rows.head.length))(n)
   }
 
-  override def transpose: Matrix[A] = this
+  override def transpose: Matrix[A] = {
+    val flattenOut = this.rows.zipWithIndex.flatMap(r => r._1.zipWithIndex.map(v => (v._1, v._2, r._2)))
+
+    val grouped = flattenOut.groupBy(_._2).values.toList.map(r => r.map(_._1))
+
+    RegularMatrix(grouped.reverse)
+  }
 }
 
 object RegularMatrix {

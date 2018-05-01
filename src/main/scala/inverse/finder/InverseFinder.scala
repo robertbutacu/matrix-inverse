@@ -3,7 +3,7 @@ package inverse.finder
 import matrix.RegularMatrix
 
 object InverseFinder {
-  def find[A: Numeric](matrix: RegularMatrix[A],
+  def find[A: Fractional](matrix: RegularMatrix[A],
                        kmax: Int,
                        epsilon: Precision)(implicit method: InverseApproximator[A]): Option[RegularMatrix[A]] = {
     def hasReachedEnd(curr: RegularMatrix[A], next: RegularMatrix[A]): Boolean = {

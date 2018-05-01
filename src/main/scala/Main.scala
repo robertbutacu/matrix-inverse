@@ -7,4 +7,6 @@ object Main extends App {
       List(7.0, 8.0, 9.0)))
 
   println(m.***(m))
+
+  println(m.transpose)
 }
