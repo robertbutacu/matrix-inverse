@@ -96,7 +96,12 @@ object RegularMatrix {
     )(n)
 
   def maximumAbsoluteColumnSumNorm[A: Fractional](matrix: RegularMatrix[A]): A = {
-    implicitly[Fractional[A]].zero
+    val matrixAsColumns = matrix.rows.zipWithIndex.flatMap(r => r._1.zipWithIndex.map( v => (v._1, r._2)))
+      .groupBy(_._2).values.toList.map(c => c.map(_._1))
+
+    val sums = matrixAsColumns.map(c => c.sum)
+
+    sums.max
   }
 
   def maximumAbsoluteRowSumNorm[A: Fractional](matrix: RegularMatrix[A]): A = {
