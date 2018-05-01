@@ -15,8 +15,8 @@ object InverseFinder {
       else {
         val nextIteration = method.computeNext(currIteration, matrix)
 
-        println(currIteration)
-        println(nextIteration + "\n\n")
+        println(s"""Iteration $k : $currIteration""")
+        println(s"""Iteration ${k+1}: $nextIteration \n\n""")
 
         if(isLowNorm(currIteration, nextIteration, epsilon)) Some(nextIteration)
         else go(nextIteration, k + 1)
