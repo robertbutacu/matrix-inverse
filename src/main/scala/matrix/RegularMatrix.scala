@@ -1,7 +1,7 @@
 package matrix
 
 case class RegularMatrix[A: Numeric](rows: List[List[A]]) extends Matrix[A] {
-  require(this.rows.forall(_.length == this.rows.maxBy(_.length).length))
+  require(this.rows.forall(r => r.length == this.rows.maxBy(_.length).length))
 
   override def rowLength: Int = this.rows.head.length
 
@@ -24,6 +24,18 @@ case class RegularMatrix[A: Numeric](rows: List[List[A]]) extends Matrix[A] {
   override def map[B](f: A => B)(implicit n: Numeric[B]): RegularMatrix[B] = RegularMatrix(this.rows.map(_.map(f)))(n)
 
   override def mapRows[B](f: List[A] => List[B])(implicit n: Numeric[B]): RegularMatrix[B] = RegularMatrix(this.rows.map(f))(n)
+
+  override def identityMatrix: Matrix[A] = {
+    val n = this.rows.length
+    val m = this.rowLength
+    val num = implicitly[Numeric[A]]
+
+    //n rows with 1 on diagonal
+    RegularMatrix[A]((0 until n).map(row => List.fill(n)(0).zipWithIndex.map{v =>
+      if(v._2 == row) num.fromInt(1)
+      else num.zero
+    }).toList)
+  }
 }
 
 object RegularMatrix {

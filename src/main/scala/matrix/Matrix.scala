@@ -9,4 +9,6 @@ trait Matrix[A] {
 
   def map[B](f: A => B)(implicit n: Numeric[B]): Matrix[B]
   def mapRows[B](f: List[A] => List[B])(implicit n: Numeric[B]): Matrix[B]
+
+  def identityMatrix: Matrix[A]
 }
