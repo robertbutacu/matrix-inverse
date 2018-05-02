@@ -37,17 +37,19 @@ object InverseApproximator {
 
   implicit def li2[A: Fractional]: InverseApproximator[A] =
     (currApproximation: RegularMatrix[A], matrix: RegularMatrix[A]) => {
-      //V(k + 1) = (In + 1/4(In - V(k)A)(3*In - V(k)A)^2)V(k)
+      //V(k + 1) = (In + 1/4(In - V(k)A) (3*In - V(k)A) ^ 2 )V(k)
       val num = implicitly[Fractional[A]]
 
       val identity = matrix.identityMatrix
 
       val vKTimesA = currApproximation.***(matrix)
-      val firstParentheses = identity.---(vKTimesA)
+      val identityMinusVkTimesA = identity.---(vKTimesA)
 
-      val secondParentheses = identity.map(num.times(_, num.fromInt(3))).---(vKTimesA)
+      val identityTimes3MinusVkTimesA = identity.map(num.times(_, num.fromInt(3))).---(vKTimesA)
 
-      val parenthesesResult = firstParentheses.***(secondParentheses)
+      val identityTimes3MinusVkTimesASquared = identityTimes3MinusVkTimesA.***(identityTimes3MinusVkTimesA)
+
+      val parenthesesResult = identityMinusVkTimesA.***(identityTimes3MinusVkTimesASquared)
 
       val fourthPartOfParentheses = parenthesesResult.map(v => num.div(v, num.fromInt(4)))
 

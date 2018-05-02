@@ -4,8 +4,8 @@ import matrix.RegularMatrix
 
 object InverseFinder {
   def find[A: Fractional](matrix: RegularMatrix[A],
-                       kmax: Int,
-                       epsilon: Precision)(implicit method: InverseApproximator[A]): Option[RegularMatrix[A]] = {
+                          kmax: Int,
+                          epsilon: Precision)(implicit method: InverseApproximator[A]): Option[RegularMatrix[A]] = {
     val frac = implicitly[Fractional[A]]
 
     def go(currIteration: RegularMatrix[A], k: Int): Option[RegularMatrix[A]] = {
@@ -16,9 +16,9 @@ object InverseFinder {
         val nextIteration = method.computeNext(currIteration, matrix)
 
         println(s"""Iteration $k : $currIteration""")
-        println(s"""Iteration ${k+1}: $nextIteration \n\n""")
+        println(s"""Iteration ${k + 1}: $nextIteration \n\n""")
 
-        if(isLowNorm(currIteration, nextIteration, epsilon)) Some(nextIteration)
+        if (isLowNorm(currIteration, nextIteration, epsilon)) Some(nextIteration)
         else go(nextIteration, k + 1)
       }
     }
@@ -29,7 +29,14 @@ object InverseFinder {
     val product = frac.times(maxColumnSumNorm, maxRowSumNorm)
     val v0 = RegularMatrix(matrix.transpose.map(v => frac.div(v, product)).rows)
 
-    go(v0, 0)
+    def canFindAproximation(): Boolean = {
+      val aTimesV0 = matrix.***(v0).---(matrix.identityMatrix)
+
+      true
+    }
+
+    if (canFindAproximation()) go(v0, 0)
+    else None
   }
 
   def isLowNorm[A: Fractional](curr: RegularMatrix[A],
@@ -37,7 +44,7 @@ object InverseFinder {
                                epsilon: Precision): Boolean = {
     val frac = implicitly[Fractional[A]]
 
-    curr.rows.zip(next.rows).forall{p =>
+    curr.rows.zip(next.rows).forall { p =>
       p._1.zip(p._2).forall(v =>
         epsilon.precision >= frac.toDouble(frac.abs(frac.minus(v._1, v._2))))
     }
