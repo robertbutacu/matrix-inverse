@@ -43,19 +43,24 @@ object InverseApproximator {
       val identity = matrix.identityMatrix
 
       val vKTimesA = currApproximation.***(matrix)
+
+      //(In - V(k)A)
       val identityMinusVkTimesA = identity.---(vKTimesA)
+
 
       val identityTimes3MinusVkTimesA = identity.map(num.times(_, num.fromInt(3))).---(vKTimesA)
 
+      // (3*In - V(k)A) ^ 2
       val identityTimes3MinusVkTimesASquared = identityTimes3MinusVkTimesA.***(identityTimes3MinusVkTimesA)
 
+      //(In - V(k)A) (3*In - V(k)A) ^ 2
       val parenthesesResult = identityMinusVkTimesA.***(identityTimes3MinusVkTimesASquared)
 
       val fourthPartOfParentheses = parenthesesResult.map(v => num.div(v, num.fromInt(4)))
 
       val wholeParenthesesResult = identity.+++(fourthPartOfParentheses)
 
-      val result = currApproximation.***(wholeParenthesesResult)
+      val result = wholeParenthesesResult.***(currApproximation)
       RegularMatrix(result.rows)
     }
 }
