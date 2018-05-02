@@ -1,6 +1,6 @@
 import inverse.finder.{InverseFinder, Precision}
 import matrix.RegularMatrix
-import inverse.finder.InverseApproximator.li2
+import inverse.finder.InverseApproximator.schultz
 
 object Main extends App {
   val n = RegularMatrix(

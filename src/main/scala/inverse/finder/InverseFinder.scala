@@ -30,9 +30,13 @@ object InverseFinder {
     val v0 = RegularMatrix(matrix.transpose.map(v => frac.div(v, product)).rows)
 
     def canFindAproximation(): Boolean = {
-      val aTimesV0 = matrix.***(v0).---(matrix.identityMatrix)
+      val aTimesV0 = matrix.***(v0)
 
-      true
+      val identity = matrix.identityMatrix
+      aTimesV0.rows.zip(identity.rows).forall { p =>
+        p._1.zip(p._2).forall(v =>
+          1 > frac.toDouble(frac.abs(frac.minus(v._1, v._2))))
+      }
     }
 
     if (canFindAproximation()) go(v0, 0)
